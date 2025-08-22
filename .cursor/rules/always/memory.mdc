@@ -1,0 +1,63 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# always/memory.mdc
+
+## [CRITICAL] Memory Purpose
+Stop having the same conversation twice. Always search memory first before responding.
+TEST: Before suggesting solutions, search memory for previous attempts
+
+## [CRITICAL] Memory Entry Format - Match User's Style
+Use these exact patterns from notes/memory.md:
+- **AVOID: [thing] - [reason/consequence]**
+- **USER PREFERS: [approach] - [context/why]**  
+- **WORKS: [solution/pattern]**
+- **PATTERN: [user behavior] means [actual intent]**
+
+Examples from actual usage:
+- `AVOID: Line number references without actually reading the code first - causes credibility loss`
+- `USER PREFERS: Evidence-based findings over comprehensive-sounding assumptions`
+- `WORKS: Systematic file-by-file audits with actual code verification produce reliable results`
+- `PATTERN: User saying "based on what evidence" means they caught me making assumptions instead of verifying`
+
+TEST: Memory entries follow these 4 patterns exactly
+
+## [CRITICAL] When to Write Memory
+Write it if it might save 5+ minutes next time:
+- User preferences about approach ("I prefer X over Y")
+- Solutions that took significant time to figure out
+- Repeated bugs and their actual fixes
+- Libraries/approaches that failed
+- User behavior patterns and what they actually mean
+- What works vs what doesn't work
+
+TEST: If unsure whether to log it, log it
+
+## [CRITICAL] Search Memory First Protocol
+ALWAYS search before responding when:
+- User mentions ANY problem → search for similar issues
+- About to suggest approaches → search for "AVOID" and "USER PREFERS"
+- User says "this again" or "keeps happening" → search for patterns
+- Feels like déjà vu → search immediately
+- User challenges assumptions → search for evidence patterns
+
+TEST: Search memory BEFORE responding, not after getting stuck
+
+## [IMPORTANT] Memory Location & Format
+- File: `notes/memory.md` 
+- Simple append - no complex organization needed
+- One practical fact per line
+- No timestamps, tags, or bureaucratic overhead
+- Better to have 100 messy useful facts than 10 perfectly formatted useless ones
+
+TEST: Memory actually prevents repeated conversations
+
+## [PREFERRED] Key User Signals to Remember
+- **"Based on what evidence"** = User caught you making assumptions instead of verifying
+- **"Rabbit trailing"** = User wants systematic exploration of interconnections
+- **"Process discipline over appearing thorough"** = Methodical beats comprehensive
+- **"Same thinking that caused the problem"** = User rejects adding bureaucratic complexity
+
+TEST: Recognize these signals and search memory for context 

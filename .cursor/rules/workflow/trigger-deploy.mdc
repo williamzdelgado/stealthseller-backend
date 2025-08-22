@@ -1,0 +1,19 @@
+---
+alwaysApply: false
+---
+# @trigger-deploy
+
+## [CRITICAL] Deployment Command
+- npx trigger.dev@3.3.17 deploy --env staging
+- Deploy trigger.dev functions to staging environment
+- Verify deployment completion
+
+## [IMPORTANT] Troubleshooting Import Errors
+- Check trigger directory for actual files before deployment
+- Remove imports for non-existent modules from trigger/index.ts
+- Only export files that actually exist
+- Fix "Could not resolve" errors by verifying file existence
+- Use `ls trigger/` to see which files are available
+TEST: All imports in trigger/index.ts should resolve to actual files
+
+TEST: Deployment should complete successfully with staging environment

@@ -1,0 +1,59 @@
+---
+description: Always use when working on things that need to be secure
+globs: 
+alwaysApply: false
+---
+# always/security.mdc
+
+## [CRITICAL] Authentication & Authorization
+- NEVER store credentials in code - use environment variables only
+- Validate user auth status before accessing protected routes/data
+- Check both authentication AND subscription status for premium features
+TEST: Every protected route checks auth + subscription when relevant
+
+## [CRITICAL] Database Security
+- Use parameterized queries ALWAYS: `db.query('SELECT * FROM users WHERE id = $1', [userId])`
+- Never concatenate user input into SQL strings
+- Check user ownership before data operations: `WHERE user_id = $1 AND id = $2`
+TEST: No string concatenation in database queries
+
+## [CRITICAL] API Endpoint Protection
+- Validate all inputs at service layer before database operations
+- Return appropriate HTTP status codes (401 unauthorized, 403 forbidden, 404 not found)
+- Log security-relevant events (failed auth, unauthorized access attempts)
+TEST: Every API endpoint validates inputs and checks permissions
+
+## [IMPORTANT] Data Exposure Prevention
+- Never expose sensitive data in error messages
+- Use generic error messages for user-facing errors
+- Log detailed errors server-side only
+- Implement proper CORS policies
+TEST: Error messages don't leak system information
+
+## [IMPORTANT] Session & State Management
+- Clean up auth listeners and subscriptions on component unmount
+- Handle expired sessions gracefully with redirect to login
+- Validate session state on page refresh/reload
+- Clear sensitive data from local storage on logout
+TEST: No memory leaks from auth listeners
+
+## [IMPORTANT] Redirect Security
+- Validate redirect URLs to prevent open redirects
+- Use centralized redirect logic (like our redirectService.ts)
+- Never trust user-provided redirect parameters
+- Default to safe fallback routes when redirect validation fails
+TEST: All redirects go through validation logic
+
+## [PREFERRED] Security Headers & Configuration
+- Set appropriate security headers in production
+- Use HTTPS in production environments
+- Implement rate limiting for sensitive endpoints
+- Regular dependency updates for security patches
+TEST: Security headers configured in deployment
+
+## [PREFERRED] Supabase-Specific Security
+- Use Row Level Security (RLS) policies for all tables
+- Validate user permissions at database level, not just app level
+- Use service role key only in server-side functions
+- Regular audit of database permissions and policies
+TEST: All tables have appropriate RLS policies enabled

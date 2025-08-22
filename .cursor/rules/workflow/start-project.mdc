@@ -1,0 +1,108 @@
+---
+alwaysApply: false
+---
+# @algorithm-refactor
+
+## [CRITICAL] File Setup Requirements
+- Create markdown file in `notes/documentation/algo/[name].md`
+- Include all required sections with proper markdown formatting
+- Set up progress tracking system with checkboxes
+
+## [IMPORTANT] Exact Section Structure Template
+```markdown
+# **[Title] Analysis with Shared Code Components**
+
+## **🎯 Overview**
+[Define project context and refactoring goals. List the flows being analyzed (e.g., automated vs user flows). Explain the problem being solved with shared components.]
+
+## **📊 Visual Flow Diagrams**
+### **1. [Flow Name 1]**
+```mermaid
+[Create mermaid diagrams showing current state flows. Use consistent styling with style X fill:#e1f5fe for shared functions]
+```
+
+### **2. [Flow Name 2]**  
+```mermaid
+[Include separate diagrams for each major flow with proper styling]
+```
+
+### **3. Shared Components Architecture**
+[Add shared components architecture diagram]
+
+### **4. Core [Logic Name] Logic**
+[Show core logic decision trees]
+
+## **🔧 Surgical Extraction Plan**
+### **Current State Analysis**
+[Document current function locations and target destinations with table format]
+
+### **Functions That Can Be Componentized**
+[List all functions that can be componentized by category with exact function signatures]
+
+### **🎯 Reusability Analysis**
+[Analyze reusability with High/Medium/Low priority classifications]
+
+## **🚀 Implementation Steps**
+### **Step 1: Extract to `_shared/[file].ts`**
+[Break down into numbered steps with exact file changes and before/after code examples]
+
+### **Step 2: Add to `_shared/[file].ts`**
+[Specify import/export changes needed]
+
+### **Step 3: Update `[function]/index.ts`**
+[Include function call updates and import changes]
+
+### **Step 4: Create `[new-function]`**
+[Plan new function creation with Trigger.dev specifications]
+
+## **✅ Expected Results**
+### **Code Reuse Metrics**
+[Document expected percentage of code reuse and shared functions count]
+
+### **What Remains Separate** 
+[List what stays separate between flows]
+
+### **Architecture Benefits**
+[List benefits like single source of truth, easier testing, etc.]
+
+## **🔄 Integration with Existing System**
+[Document how changes integrate with existing system patterns]
+
+## **🏷️ IMPROVED NAMING CONVENTIONS**
+[Include research-based function naming with before/after comparisons]
+
+## **📋 IMPLEMENTATION CHECKLIST**
+### **Phase 1: Function Extraction (Step-by-Step)**
+- [ ] **STEP 1**: [Description with testing verification]
+- [ ] **STEP 2**: [Description with deployment verification]
+[Track progress with unchecked boxes, mark as [x] when complete]
+
+### **Phase 2: New Implementation**
+[Continue with implementation phases]
+
+### **Phase 3: Validation & Cleanup**
+[Include final validation and cleanup steps]
+
+## **🧠 MEMORY CHECKPOINT**
+### **Current Context & Progress**
+[Document current progress and next actions with timestamps]
+
+### **What We've Accomplished**
+[List what's been accomplished with status updates]
+
+### **Current State of Functions**
+[Document function extraction status with completion markers]
+
+### **Next Action Items**
+[Include key design decisions made and context for recovery if session is lost]
+
+## **🎯 QUICK RECOVERY GUIDE**
+[Provide context for recovery if session is lost with key questions and emergency rollback procedures]
+```markdown
+
+## [IMPORTANT] Setup Process
+- Use exact structure above with same emojis and formatting
+- Replace bracketed placeholders with actual content
+- Initialize all checkboxes as unchecked [ ]
+- Create mermaid diagram placeholders
+- Maintain exact section hierarchy

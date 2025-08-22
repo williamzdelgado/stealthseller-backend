@@ -1,0 +1,20 @@
+---
+alwaysApply: false
+---
+# @get-me
+
+## [CRITICAL] Confirmation Required
+- Do you get me?
+- Confirm understanding before implementing
+- Ask clarifying questions if requirements unclear
+- Verify approach matches expectations
+TEST: Must confirm understanding before proceeding
+
+## [IMPORTANT] Communication Pattern
+- Repeat back key requirements
+- Identify any ambiguous points
+- Suggest approach for confirmation
+- Wait for explicit approval
+
+CORRECT: Clear confirmation of understanding
+INCORRECT: Proceeding without verification

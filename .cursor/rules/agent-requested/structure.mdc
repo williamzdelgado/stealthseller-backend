@@ -1,0 +1,39 @@
+---
+description: Use when creating new files, organizing code, or unsure about TypeScript project file structure - guides proper separation of components, services, hooks, and business logic
+globs: 
+alwaysApply: false
+---
+# always/structure.mdc
+
+## [CRITICAL] TypeScript Frontend Project Organization
+
+### Components (`src/components/`)
+- Reusable, presentational UI elements ONLY
+- [CRITICAL] NEVER include: page-specific logic, business logic, API calls, large state management
+
+### Pages (`src/pages/`)
+- Route-level UI that orchestrates components
+- Manage page-level state and fetch data via hooks/services
+
+### Hooks (`src/hooks/`)
+- Reusable logic for state, side effects, data fetching
+- [CRITICAL] NEVER: return JSX or contain page-specific orchestration
+
+### Services (`src/services/`)
+- [CRITICAL] ALL business logic and data fetching MUST live here
+- Handle API interactions, database requests, data processing
+- [CRITICAL] NEVER: contain UI rendering or page-specific logic
+
+### Context (`src/context/`)
+- Global state management by feature domain
+
+### Utils (`src/utils/`)
+- Small, pure utility functions only
+
+## [CRITICAL] Key Rules
+1. Components = UI only, no business logic or data fetching
+2. Pages = Compose components, fetch data via hooks/services  
+3. Services = Business logic, ALL data/API/database requests
+4. Hooks = Reusable logic, sometimes data fetching
+5. NEVER put API calls in components or pages
+6. If you see any of the key rules violated call out the specific lines of code that violate our organization protocol

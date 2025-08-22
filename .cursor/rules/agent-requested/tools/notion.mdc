@@ -1,0 +1,236 @@
+---
+description: Must always use when interacting with Notion MCP workspace - creating, editing, or managing pages and databases
+globs: 
+alwaysApply: false
+---
+# agent-requested/tools/notion.mdc
+
+## Heading Block Structure [CRITICAL]
+
+### Mandatory Heading Implementation
+- Use ONLY `heading_3` block types for ALL headings in page content
+- Never use `heading_1` or `heading_2` for page content - reserved for page titles only
+- Use `paragraph` blocks for all regular text content
+- Use `"rich_text"` property for ALL block types (headings AND paragraphs)
+- Structure: `{"type": "heading_3", "heading_3": {"rich_text": [...]}}`
+TEST: All content headings use heading_3, regular text uses paragraph
+
+CORRECT for page content:
+```json
+{
+  "type": "heading_3",
+  "heading_3": {
+    "rich_text": [{"type": "text", "text": {"content": "Business Overview"}}]
+  }
+}
+```
+
+INCORRECT for page content:
+```json
+{
+  "type": "heading_1", 
+  "heading_1": {
+    "rich_text": [{"type": "text", "text": {"content": "Business Overview"}}]
+  }
+}
+```
+
+### Property Validation
+- Headings: `"heading_3": {"rich_text": [...]}`
+- Paragraphs: `"paragraph": {"rich_text": [...]}`
+- Lists: `"bulleted_list_item": {"rich_text": [...]}`
+- Never use `"text"` property - always `"rich_text"`
+TEST: Block property name matches block type, all use rich_text
+
+## API Efficiency [CRITICAL]
+
+### Batching Requirements
+- Always batch ALL content into single `API-patch-block-children` call
+- Never make multiple API calls for same content operation
+- Maximum 100 blocks per request - use this limit fully
+- Structure complete page content before making any MCP calls
+TEST: Only one API call made per content operation
+
+### Block Deletion Limitations
+- **NO BULK DELETE**: Notion API does not support bulk/batch delete operations
+- Each block must be deleted individually via separate API calls
+- Rate limit: 50,000 blocks per hour maximum
+- When deleting many blocks, warn user it will take multiple API calls
+- Alternative: Use `{"archived": true}` to soft-delete blocks
+TEST: User warned about multiple API calls for bulk deletions
+
+### Block Type Mapping for Page Content
+- Section headings: `heading_3` with `"rich_text"` ONLY
+- Body text: `paragraph` with `"rich_text"`
+- Bullet points: `bulleted_list_item` with `"rich_text"`
+- **Never use**: `heading_1` or `heading_2` in page content
+TEST: Content only uses heading_3 and paragraph blocks
+
+## Content Standards [IMPORTANT]
+
+### Page Creation
+- Use descriptive, specific titles with Title Case
+- Include emojis for visual identification ONLY when explicitly requested by user (📝 notes, 🎯 goals, 📅 planning)
+- **IMPORTANT**: Emoji usage applies ONLY to Notion page content creation, NOT to conversational responses
+- Default behavior: NO emojis in page titles unless specifically asked
+- Structure: Overview → Main Content → Resources
+- All section headings use `heading_3` blocks only
+- Fill all required database properties: Title, Status, Assignee
+TEST: Page uses only heading_3 for sections, proper database properties, emojis only when requested
+
+### Database Property Standards  
+- Date format: YYYY-MM-DD for all dates
+- Priority: High/Medium/Low only (no custom priorities)
+- Links: Use database relations, not text mentions
+- Status workflow: "To Do" → "In Progress" → "Done"
+TEST: All database fields follow standard formats
+
+## Naming Conventions [IMPORTANT]
+
+### Project Naming
+- Format: "Project - [Name]"
+- Example: "Project - Website Redesign"
+TEST: Project names follow consistent format
+
+### Task Naming
+- Start with action verb
+- Example: "Review design mockups"  
+TEST: Task names begin with action verbs
+
+### Meeting Notes
+- Format: "[Type] Meeting - [Date]"
+- Example: "Team Meeting - 2025-05-30"
+TEST: Meeting notes follow date format
+
+### Documentation
+- Format: "[Category] - [Specific Name]"
+- Example: "Guidelines - Brand Colors"
+TEST: Documentation follows category format
+
+## Content Management [IMPORTANT]
+
+### Content Operations
+- Always append new content (never overwrite existing)
+- Preserve formatting unless explicitly asked to change
+- Use `API-patch-block-children` for adding content
+- Use `API-update-a-block` for editing specific sections
+- Add timestamps when appending updates
+TEST: Existing content preserved when adding new content
+
+### Pre-Flight Validation
+- All headings use `heading_3` block types with `"rich_text"` property
+- All paragraphs use `"rich_text"` property  
+- Content batched into single API call (max 100 blocks)
+- No bold paragraphs pretending to be headings
+- Correct database properties filled
+TEST: Content passes all validation checks before sending
+
+## Implementation Templates [PREFERRED]
+
+### Task Creation Template
+```json
+{
+  "children": [
+    {
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "Task: [Action Verb + Description]"}}]
+      }
+    },
+    {
+      "type": "paragraph", 
+      "paragraph": {
+        "rich_text": [{"type": "text", "text": {"content": "Status: To Do | Due: [Date] | Assignee: [Name]"}}]
+      }
+    }
+  ]
+}
+```
+
+### Meeting Notes Template  
+```json
+{
+  "children": [
+    {
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "[Meeting Type] - [Date]"}}]
+      }
+    },
+    {
+      "type": "heading_3", 
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "Attendees"}}]
+      }
+    },
+    {
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "Agenda"}}]
+      }
+    },
+    {
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "Action Items"}}]
+      }
+    }
+  ]
+}
+```
+
+### Documentation Template
+```json
+{
+  "children": [
+    {
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "[Clear Descriptive Title]"}}]
+      }
+    },
+    {
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [{"type": "text", "text": {"content": "Overview"}}]
+      }
+    },
+    {
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [{"type": "text", "text": {"content": "Overview content here..."}}]
+      }
+    }
+  ]
+}
+```
+
+## Troubleshooting [PREFERRED]
+
+### Headings Appear as Bold Text
+- Check: Block type is `heading_3` not `paragraph`
+- Check: Using `"rich_text"` property not `"text"`
+- Check: No bold annotations on paragraph blocks  
+- Fix: Recreate using proper heading_3 block structure
+TEST: Headings display as actual headings in Notion
+
+### Multiple API Calls Made
+- Stop: Plan entire content structure first
+- Batch: Combine all blocks into single children array
+- Send: Make only ONE `API-patch-block-children` call
+- Exception: Block deletion requires individual calls (API limitation)
+TEST: Only one API call in network logs (except deletions)
+
+### Bulk Deletion Issues
+- Understand: No native bulk delete in Notion API
+- Warn user: "This will require [X] individual API calls"
+- Alternative: Archive blocks instead of deleting when possible
+- Rate limit: Maximum 50,000 blocks per hour
+TEST: User informed about deletion limitations before proceeding
+
+### Missing Properties
+- Identify: Required properties for database type
+- Fill: Title, Status, Assignee at minimum
+- Verify: Date format is YYYY-MM-DD
+- Link: Use database relations not text mentions
+TEST: All required database properties populated 

@@ -1,0 +1,55 @@
+---
+description: Use when conducting security audits, architecture reviews, or code quality assessments to ensure systematic evaluation.
+globs: 
+alwaysApply: false
+---
+# agent-requested/audit-system.mdc
+
+## [CRITICAL] Verification First
+- Read the actual code before claiming any issue exists
+- Add inline comment immediately when issue found: `// TODO SECURITY-001: Description (CRITICAL)`
+- Only write findings for issues that have inline comments in code
+TEST: Every finding has corresponding inline comment
+
+## [CRITICAL] Scope Discipline  
+- Only audit files explicitly mentioned in user request
+- Only find issues related to user's stated concerns
+- Never expand beyond requested audit scope
+TEST: All findings directly relate to user's specific request
+
+## [CRITICAL] Technical Debt Detection
+- Flag dead code that serves no purpose or connects to nothing
+- Identify unused functions, components, imports, or variables
+- Find redundant code that duplicates existing functionality
+- Spot code that was left behind from refactoring but does nothing
+- Mark code with TODO/FIXME comments that indicate incomplete work
+TEST: Can explain why flagged code is unnecessary or problematic
+CORRECT: `// TODO DEBT-001: Unused function - no callers found`
+INCORRECT: Flagging code just because it's complex or unfamiliar
+
+## [CRITICAL] Standard Audit File Location
+- ALWAYS write findings to `notes/audit.md` - never any other location
+- Create the file if it doesn't exist
+- Append new findings to existing content when file exists
+TEST: Findings are written to notes/audit.md, no other file
+CORRECT: `notes/audit.md`
+INCORRECT: `audit-findings.md`, `security-audit.md`, any other filename or location
+
+## [CRITICAL] Simple Findings Format - NO COMPREHENSIVE DOCUMENTS
+- NEVER create executive summaries, detailed analysis, or organized sections
+- NEVER add remediation plans, risk assessments, or categorization
+- ONLY write flat list: `- [ ] ISSUE-ID: Brief description - file.tsx:line`
+- NO headers beyond simple title, NO explanations, NO organization
+TEST: Findings file is ONLY checkboxes - nothing else
+CORRECT: 
+```markdown
+- [ ] AUTH-001: Brief issue - file.tsx:42
+- [ ] AUTH-002: Another issue - other.tsx:15
+```
+INCORRECT: Executive summaries, priority sections, detailed explanations
+
+## [IMPORTANT] Evidence Required
+- Show exact code snippet for every claim
+- Reference line numbers only after reading them
+- Never make assumptions about typical vulnerabilities
+TEST: Can quote specific problematic code for every finding

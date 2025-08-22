@@ -1,0 +1,20 @@
+---
+alwaysApply: false
+---
+# @no-edits
+
+## [CRITICAL] Planning Mode Only
+- No edits yet, surgical plan
+- Create detailed plan but do not implement
+- Wait for explicit "implement exactly" command
+- Provide analysis and strategy only
+TEST: No code changes should be made
+
+## [IMPORTANT] Response Pattern
+- Focus on planning and analysis
+- Ask clarifying questions if needed
+- Confirm understanding before proceeding
+- Document the approach clearly
+
+CORRECT: Detailed plan with no code execution
+INCORRECT: Writing code during planning phase

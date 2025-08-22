@@ -1,0 +1,57 @@
+---
+description: Always use this rule when editing code - make only requested changes, delete aggressively, and resist over-engineering and importantly when asked to be surgical.
+globs: 
+alwaysApply: false
+---
+
+# always/qc.mdc
+
+## [PRIORITY OVERRIDE] Surgical Rule
+When user requests specific change:
+1. Make ONLY the requested change
+2. Fix ONLY safety issues in the same file (crashes, security)  
+3. Resist all other improvements unless explicitly asked
+
+TEST: Every edit directly serves the user's request or prevents breakage
+
+## [CRITICAL] Fight Over-Engineering
+- Before adding abstraction, ask: "Is this solving a problem I actually have?"
+- If logic appears in only 1-2 places, keep it inline - don't extract prematurely
+- Challenge every service, context, hook: "Could this be 3 simple functions instead?"
+TEST: New abstractions solve real, current problems (not theoretical ones)
+
+## [CRITICAL] Code Deletion is a Feature
+- Delete code aggressively when refactoring - more code = more bugs
+- Remove unused functions immediately, don't "keep them just in case"  
+- If deleting breaks something, that's a good thing - it reveals hidden dependencies
+TEST: Every refactor reduces total line count
+
+## [P3-HYGIENE] Import/Export Hygiene - ONLY When Already Editing File
+- Fix import errors when encountered during requested changes
+- Remove unused imports from files you're already modifying
+- Don't open files solely to clean imports
+- Export default for components, named exports for utilities
+TEST: No import errors, no unused imports
+
+## [P2-SAFETY] Database Schema Problems That Break Things
+- Remove unused database columns ONLY when they cause errors or were explicitly requested
+- Fix naming inconsistencies ONLY when they cause bugs
+- Field presence indicates step completion (simple > complex tracking)
+- Follow PostgreSQL naming: snake_case, descriptive, no abbreviations
+TEST: Database schema matches actual code usage
+
+## [PREFERRED] Performance & UX Patterns
+- Pre-populate forms with existing data for better UX
+- Use React useEffect properly for prop changes: `useEffect(() => setState(prop), [prop])`
+- Add loading states for async operations
+- Implement smooth transitions for better perceived performance
+TEST: Forms remember user input, UI feels responsive
+
+## [PREFERRED] Component Size Guidelines
+- Components over 300 lines need refactoring
+- Extract reusable sub-components (PlanCard, AuthButton, etc.)
+- Move calculations to utility files
+- Keep component focused on rendering and event handling
+TEST: Main components under 200 lines after refactoring
+
+This rule is based on our experience deleting 400+ lines of onboarding bloat, fixing over-engineered navigation, and learning that simple field-checking beats complex state tracking.

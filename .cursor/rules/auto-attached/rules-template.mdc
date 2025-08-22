@@ -1,0 +1,61 @@
+---
+description: 
+globs: *mdc
+alwaysApply: false
+---
+---
+description: Must always use when always use when talking, writing or editing Cursor rules to ensure proper structure and clear instructions.
+globs: 
+alwaysApply: false
+---
+# auto-attached/rules-template.mdc
+
+## [CRITICAL] Structure Requirements
+- Use proper frontmatter with description, globs, and alwaysApply
+- Keep rules under 500 lines total
+- Start with priority-tagged sections: `[CRITICAL]`, `[IMPORTANT]`, `[PREFERRED]`
+- Include verification criteria with "TEST:" for each rule
+
+## [CRITICAL] Effective Language Patterns
+- Use specific, actionable language: "Use functional components" not "write good code"
+- Start with action verbs: "Use", "Never", "Always", "Verify"
+- Include authoritative keywords: `[CRITICAL]`, `[IMPORTANT]`, "MUST", "NEVER"
+- Be direct and terse - avoid explanatory text
+
+## [IMPORTANT] Priority Classification System
+- `[CRITICAL]` - System breaks/security risk without this
+- `[IMPORTANT]` - Quality/maintainability suffers
+- `[PREFERRED]` - Best practice recommendations
+TEST: Every rule should have a clear priority tag
+
+## [IMPORTANT] Example Patterns
+- Provide CORRECT/INCORRECT code examples with labels
+- Show what NOT to do alongside preferred patterns
+- Include deprecated pattern examples marked "DO NOT USE"
+- Use contrastive examples for better AI comprehension
+
+## [IMPORTANT] Rule Structure Template
+```
+## SECTION [PRIORITY]
+- [ACTION] [SPECIFIC REQUIREMENT] - [BRIEF RATIONALE]
+  TEST: [VERIFICATION CRITERIA]
+  CORRECT: [CODE EXAMPLE]
+  INCORRECT: [ANTI-PATTERN]
+```
+
+## [IMPORTANT] Description Writing
+- Start with "Use when..." followed by simple, clear action
+- Keep descriptions short and specific to avoid confusion
+- Focus on one main trigger scenario per rule
+
+## [PREFERRED] Rule Types
+- Always (`alwaysApply: true`): Core project standards only
+- Auto (`globs: ["*.ts"]`): Language/file-specific patterns
+- Agent (`description: "..."`): Context-dependent best practices
+- Manual: Specialized workflows, explicit `@rulename` only
+
+## [PREFERRED] File Organization
+- Location: `.cursor/rules/category/name.mdc`
+- Naming: kebab-case, descriptive single words when possible
+- Split large concepts into multiple focused rules
+TEST: Each rule should focus on one specific domain or concern

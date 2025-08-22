@@ -1,0 +1,76 @@
+---
+description: Always use when user requests generating a detailed task list from an existing Product Requirements Document (PRD)
+globs: 
+alwaysApply: false
+---
+# agent-requested/project/task.mdc
+
+# Task Generation from PRD
+
+## [CRITICAL] Goal Statement
+- Generate complete task list from PRD in single operation
+- Target junior developer implementation without additional clarification
+- NEVER use two-phase generation - create entire task breakdown immediately
+  TEST: Complete task list generated in one operation without waiting for approval
+
+## [CRITICAL] Output Format Requirements
+- MUST follow this exact markdown structure:
+
+```markdown
+## Relevant Files
+
+- `path/to/file.ts` - Brief description of purpose
+- `path/to/file.test.ts` - Unit tests for file.ts
+- `path/to/another.tsx` - Brief description
+- `path/to/another.test.tsx` - Unit tests for another.tsx
+
+### Notes
+
+- Unit tests should be placed alongside code files
+- Use `npx jest [optional/path/to/test/file]` to run tests
+
+## Tasks
+
+- [ ] 1.0 Parent Task Title
+  - [ ] 1.1 Sub-task description
+  - [ ] 1.2 Sub-task description
+- [ ] 2.0 Next Parent Task
+  - [ ] 2.1 Sub-task description
+```
+
+  TEST: Output exactly matches this template structure
+  CORRECT: Exact headers, numbering (1.0, 1.1), checkbox format `- [ ]`
+  INCORRECT: Different numbering scheme, missing sections, or modified template
+
+## [CRITICAL] File Requirements
+- MUST save as `tasks-[feature-name].md` in `/notes/tasks/` directory
+- MUST base task generation on actual PRD content, not assumptions
+- ALWAYS read and analyze the specified PRD before generating tasks
+  TEST: Tasks directly implement specific PRD requirements
+  CORRECT: Tasks match PRD functional requirements and user stories
+  INCORRECT: Generic tasks not tied to specific PRD content
+
+## [IMPORTANT] File Identification
+- MUST identify all files needing creation or modification
+- ALWAYS include corresponding test files for each implementation file
+- MUST provide brief description explaining each file's purpose
+- Include both implementation files and their test counterparts
+  TEST: All necessary files identified with appropriate test files
+  CORRECT: `component.tsx` paired with `component.test.tsx`
+  INCORRECT: Implementation files without corresponding test files
+
+## [IMPORTANT] Task Structure
+- MUST create actionable sub-tasks under numbered parent tasks
+- ALWAYS ensure sub-tasks are specific enough for junior developer
+- NEVER create vague tasks that require interpretation
+- Use numbered format: 1.0, 1.1, 1.2, 2.0, 2.1, etc.
+  TEST: Each sub-task implementable without additional clarification
+  CORRECT: "Create login form with email/password fields and validation"
+  INCORRECT: "Handle authentication stuff" or "Set up the login thing"
+
+## [PREFERRED] Quality Standards
+- Target junior developer as primary reader
+- Ensure logical task flow and clear dependencies
+- Cover all PRD requirements without scope creep
+- Make sub-tasks specific and immediately actionable
+  TEST: Junior developer can follow task list to completion 

@@ -1,0 +1,70 @@
+---
+description: Always must use when user requests creating a Product Requirements Document (PRD) for a new feature or functionality
+globs: 
+alwaysApply: false
+---
+# agent-requested/project/prd.mdc
+
+# Product Requirements Document Generation
+
+## [CRITICAL] Goal Statement
+- Generate actionable PRD that enables immediate task breakdown
+- Target developer implementation without additional meetings/clarification
+- Write complete PRD in single operation unless genuinely missing critical context
+  TEST: PRD contains enough detail for task generation without follow-up questions
+
+## [CRITICAL] Output Format
+- File name: `prd-[feature-name].md` in `/notes/prd/`
+- MUST include these core sections:
+
+```markdown
+# [Feature Name] PRD
+
+## Overview
+Brief description of what we're building and why
+
+## User Stories
+- As a [user type], I want [goal] so that [benefit]
+- As a [user type], I want [goal] so that [benefit]
+
+## Requirements
+### Must Have
+- Specific, testable requirement
+- Specific, testable requirement
+
+### Nice to Have  
+- Optional enhancement
+- Optional enhancement
+
+## Technical Considerations
+- Key technical constraints or decisions
+- Integration points with existing systems
+- Performance/security requirements if relevant
+
+## Success Criteria
+- How we'll know this feature is working correctly
+- Measurable outcomes or behaviors
+```
+
+## [PRIORITY-1] When to Ask vs Proceed
+- **ASK**: Only when core functionality is genuinely unclear
+  - "Build a login system" → What authentication method? OAuth? Email/password?
+  - "Add payments" → One-time? Recurring? What payment methods?
+- **PROCEED**: When you can infer reasonable defaults
+  - "Improve dashboard" → Standard improvements (performance, UI, UX)
+  - "Fix user settings" → Standard settings functionality
+  TEST: Only ask questions that change fundamental architecture/scope
+
+## [PRIORITY-2] PRD Quality Standards
+- **Specific**: "Add search" → "Add full-text search to articles with filters by category and date"
+- **Testable**: Requirements can be verified with clear pass/fail criteria
+- **Developer-ready**: Contains enough detail to start coding immediately
+- **Scope-appropriate**: Match detail level to project size
+  TEST: A developer could start implementation from this PRD alone
+
+## [PRIORITY-3] Simplification Principles
+- **Start writing immediately** unless critical context missing
+- **Reasonable assumptions** over endless questioning
+- **Practical over perfect** - focus on what developers need
+- **Brief but complete** - no fluff, all substance
+  TEST: PRD generation feels efficient, not bureaucratic 

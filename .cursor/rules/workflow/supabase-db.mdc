@@ -1,0 +1,18 @@
+---
+alwaysApply: false
+---
+# @supabase-db
+
+## [CRITICAL] Environment Rules
+- Always use Supabase MCP for database operations
+- Default to staging environment (nlydrzszwijdbuzgnxzp)
+- Only access production when explicitly requested
+- No database edits without approval
+
+## [IMPORTANT] Allowed Operations
+- Query table schemas and data (read-only)
+- Check existing records
+- List branches and select staging
+- Reset test data timestamps when requested
+
+TEST: Must confirm environment and get approval before any database changes

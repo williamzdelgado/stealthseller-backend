@@ -1,0 +1,53 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# always/rule-disclosure.mdc
+
+## [CRITICAL] Always Show Rules Applied
+**MANDATORY**: Start every response by showing which rules are being used:
+
+**Rules applied:**
+`/always/core.mdc` - core directives and engineering mindset
+`/always/memory.mdc` - memory management and context tracking  
+`/agent-requested/structure.mdc` - TypeScript project organization
+`/agent-requested/[specific-rule].mdc` - context-specific patterns needed
+
+TEST: Every response shows rule disclosure unless it's a simple clarification question
+TEST: Actually use fetch rules to see them.
+
+## [CRITICAL] Automatic Rule Disclosure Triggers
+- Security/auth work → `/agent-requested/security.mdc`
+- TypeScript project organization → `/agent-requested/structure.mdc`
+- Data fetching/API calls → `/agent-requested/fetching.mdc`
+- UI component work → mention structure rules
+- Research requests → `/agent-requested/tools/perplexity.mdc`
+- Notion workspace → `/agent-requested/tools/notion.mdc`
+- Supabase operations → `/agent-requested/tools/supabase.mdc`
+- Web testing → `/agent-requested/tools/operative-sh.mdc`
+- PRD creation → `/agent-requested/project/prd.mdc`
+- Task management → `/agent-requested/project/task.mdc` + `/agent-requested/project/tracking.mdc`
+- Documentation → `/agent-requested/docs.mdc`
+- Quality/surgical changes → `/agent-requested/qc.mdc`
+- Audit/review work → `/agent-requested/audit.mdc`
+- Rule editing → `/agent-requested/rules-template.mdc`
+
+TEST: Pattern recognition triggers automatic rule fetching and disclosure
+
+## [CRITICAL] Format Requirements
+- Always use backticks: `/category/rule-name.mdc` with full path and .mdc extension
+- Never list `rule-disclosure.mdc` itself - it's meta communication  
+- Only reference rules that actually exist and were applied
+- Put disclosure at START of responses for maximum visibility
+- Use bullet format for clean readability
+
+TEST: Every listed rule exists, was fetched, and was actually applied to the response
+
+## [IMPORTANT] Benefits of Always Showing Rules
+- **AI Memory**: Helps agent remember which guidelines to follow
+- **User Transparency**: Shows exactly what standards are being applied
+- **Consistency**: Ensures proper rule application across conversations
+- **Debugging**: Makes it clear when rules conflict or are missing
+
+TEST: Rule disclosure improves both AI performance and user understanding

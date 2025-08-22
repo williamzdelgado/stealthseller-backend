@@ -1,0 +1,30 @@
+---
+description: Must always use when working with data fetching, services, hooks, or state management.
+globs: 
+alwaysApply: false
+---
+# agent-requested/fetching.mdc
+
+## [CRITICAL] React Query Patterns
+- Use React Query for all data fetching
+- Follow established query key patterns
+- Implement proper cache invalidation
+- Handle loading/error states consistently
+
+## [IMPORTANT] Service Implementation
+- Use handleServiceError consistently
+- Export through index.ts files
+- Organize by domain
+
+## [IMPORTANT] Hook Implementation
+- Implement debouncing for search/filter operations
+- Use consistent naming: use[Domain][Action]
+- Separate list vs. CRUD operations
+- Handle loading/error states properly
+- Return properly typed results
+
+## [PREFERRED] State Management
+- Keep state close to where it's needed
+- Use contexts only for truly global state
+- Follow established context patterns
+- Prefer React Query for server state over local state

@@ -1,0 +1,20 @@
+---
+alwaysApply: false
+---
+# @test-deploy
+
+## [CRITICAL] Testing Flow
+- Wait we need to test what we just did, push to supabase staging
+- Use Supabase MCP for database operations
+- Staging branch: nlydrzszwijdbuzgnxzp
+- Use CLI to update functions
+TEST: Always test locally before staging deployment
+
+## [IMPORTANT] Deployment Pattern
+- Test locally first
+- Deploy to staging environment
+- Verify functionality after deployment
+- Use proper staging credentials
+
+CORRECT: Test → Deploy → Verify
+INCORRECT: Deploying without testing verification
