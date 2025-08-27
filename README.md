@@ -1,108 +1,70 @@
-# StealthSeller Backend
+ 🔄 Batch Processing Flow Overview
 
-Backend services, edge functions, and background jobs for StealthSeller - the Amazon seller monitoring platform.
+  1. Domain Layer (_domain/)
 
-## Architecture Overview
+  - batching.ts - Pure functions for splitting ASINs into batches (no I/O)
+  - routing.ts - Decides whether to process immediately (≤50 products) or queue
+  (>50 products)
+  - tokens.ts - Calculates required tokens (7 tokens per product)
 
-This repository contains all backend components of StealthSeller:
+  2. Infrastructure Layer (_infrastructure/)
 
-- **Supabase Edge Functions** - API endpoints for real-time operations
-- **Trigger.dev Jobs** - Background processing and scheduled tasks
-- **Database Schema** - Migrations and triggers
-- **Development Tools** - Cursor AI rules and configurations
+  - batch-processing.ts - Main processor that orchestrates the complete flow
+  - queue.ts - Handles large batches by creating records and triggering
+  Trigger.dev jobs
+  - database.ts - Database operations (batch tracking, product inserts)
 
-## Directory Structure
+  3. Batch Processing Pipeline
 
-```
-├── .cursor/rules/           # Cursor AI development rules
-├── supabase/
-│   ├── functions/          # Edge functions (API endpoints)
-│   ├── migrations/         # Database schema migrations
-│   └── config.toml         # Supabase configuration
-├── trigger/
-│   ├── index.ts           # Trigger.dev main entry point
-│   ├── keepa-discovery.ts # Keepa API discovery jobs
-│   └── product-batches.ts # Product batch processing
-├── docs/                   # Backend documentation
-└── scripts/               # Utility scripts
-```
+  📊 Product Discovery (seller-lookup)
+      ↓
+  🧮 Token & Size Check (domain/routing.ts)
+      ↓
+     📦 ≤50 products?     🚛 >50 products?
+      ↓                      ↓
+  [IMMEDIATE PROCESSING]   [QUEUE PROCESSING]
+      ↓                      ↓
+  batch-processing.ts      queue.ts creates batches
+      ↓                      ↓
+  1. Create batch record   Multiple batch records
+  2. Mark PROCESSING       Mark PENDING
+  3. Fetch from Keepa      ↓
+  4. Insert to database    Trigger.dev picks up
+  5. Update batch status   ↓
+  6. Update seller         Uses batch-processing.ts
+                           for each batch
 
-## Edge Functions
+  4. How They Work Together:
 
-Located in `supabase/functions/`:
+  batch-processing.ts is the core orchestrator:
+  // Step 1: Create batch tracking record
+  // Step 2: Mark as PROCESSING  
+  // Step 3: Fetch from Keepa API (10 ASINs per API call)
+  // Step 4: Insert products (sophisticated two-phase DB operation)  
+  // Step 5: Mark batch as COMPLETED/FAILED/PARTIAL
+  // Step 6: Update seller last_checked_at
 
-- `seller-lookup/` - Validate and fetch seller information from Keepa API
-- `product-processing/` - Process product data and handle limits
-- `stripe-*` - Payment processing and webhooks
-- `debug-db-enums/` - Database debugging utilities
+  queue.ts handles large sellers:
+  // 1. Check for existing batches (deduplication)
+  // 2. Split into 100-product batches  
+  // 3. Create all batch records as PENDING
+  // 4. Trigger ONE Trigger.dev job for the seller
+  // 5. Trigger.dev claims and processes each batch using batch-processing.ts
 
-## Trigger.dev Jobs
+  5. Key Differences Between Files:
 
-Located in `trigger/`:
+  - Original _shared/batch-processor.ts: Uses fetchKeepaData and has all logic
+  inline
+  - My _infrastructure/batch-processing.ts: Uses fetchProductData and delegates to
+   other infrastructure functions
+  - _shared/queue.ts: Complex batch claiming logic for Trigger.dev workers
+  - My _infrastructure/queue.ts: Simplified batch creation and triggering
 
-- **Keepa Discovery** - Background seller and product discovery
-- **Product Batches** - Batch processing of large product datasets
-- **Scheduled Tasks** - Periodic maintenance and updates
-
-## Development Setup
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Set up environment variables:**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-
-3. **Start Supabase locally:**
-   ```bash
-   supabase start
-   ```
-
-4. **Deploy edge functions:**
-   ```bash
-   supabase functions deploy --project-ref your-project-ref
-   ```
-
-5. **Run Trigger.dev development:**
-   ```bash
-   npx trigger.dev@latest dev
-   ```
-
-## Deployment
-
-### Edge Functions
-```bash
-supabase functions deploy --project-ref nlydrzszwijdbuzgnxzp
-```
-
-### Trigger.dev Jobs
-```bash
-npx trigger.dev@latest deploy
-```
-
-## Engineering Philosophy
-
-Following StealthSeller's core principles:
-
-- **Simple, boring solutions** over complex architectures
-- **Evidence-based decisions** - Real user impact, not theoretical problems
-- **Surgical precision** - If not broken and not requested, leave it alone
-- **Security first** - Security isn't a feature, it's a requirement
-
-## Related Repositories
-
-- [stealthseller-v2](https://github.com/williamzdelgado/stealthseller-v2) - Frontend React application
-
-## Documentation
-
-- [API Documentation](./docs/api/)
-- [Deployment Guide](./docs/deployment/)
-- [Development Workflow](./docs/development/)
-
----
-
-*Backend for StealthSeller v2 - Amazon Seller Intelligence Platform*
+  The batch processing system handles:
+  - Immediate processing for small sellers (≤50 products)
+  - Queue processing for large sellers (>50 products, split into 100-product
+  batches)
+  - Concurrency control (max 3 Trigger.dev jobs running)
+  - Error handling with transient vs hard error classification
+  - Batch deduplication to prevent duplicate processing
+  - Token management and Keepa API rate limiting

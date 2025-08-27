@@ -1,13 +1,14 @@
 import "https://deno.land/x/xhr@0.3.0/mod.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-// Import shared Keepa operations
-import { fetchKeepaData, insertProducts, findNewAsins, type KeepaProduct, type InsertResult, type AsinComparison } from '../_shared/keepa.ts';
-import { processProductBatch, type BatchProcessingResult, KEEPA_API_BATCH_SIZE, ROUTING_THRESHOLD } from '../_shared/batch-processor.ts';
+// Import domain layer types and constants
+import { LIMITS } from '../_domain/constants.ts';
 
-// Import queue processing for smart routing
-import { enqueueProductBatches } from '../_shared/queue.ts';
-import { WebhookNotifier } from '../_shared/discord.ts';
+// Import infrastructure operations
+import { findNewAsins, type AsinComparison, type InsertResult } from '../_infrastructure/database.ts';
+import { processProductBatch, type BatchProcessingResult } from '../_infrastructure/batch-processing.ts';
+import { enqueueProductBatches } from '../_infrastructure/queue.ts';
+import { WebhookNotifier } from '../_infrastructure/discord.ts';
 
 // Import Trigger.dev SDK for queue processing
 import { tasks, configure, runs } from "npm:@trigger.dev/sdk@3.0.0/v3";
@@ -135,11 +136,11 @@ Deno.serve(async (req: Request) => {
     const newAsinsToProcess = processingDecision.newAsins || [];
     
     // Phase 3: Smart routing - check if we should use queue processing
-    const shouldQueue = newAsinsToProcess.length > ROUTING_THRESHOLD;
+    const shouldQueue = newAsinsToProcess.length > LIMITS.ROUTING_THRESHOLD;
     
     let result;
     if (shouldQueue) {
-      // Route to queue processing (>100 NEW products)
+      // Route to queue processing (>50 NEW products)
       log(`🚀 Routing to queue processing: ${newAsinsToProcess.length} NEW products (${processingDecision.existingCount} existing)`);
       
       // Webhook notification: Smart routing decision

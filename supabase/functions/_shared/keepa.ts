@@ -170,33 +170,6 @@ export async function findNewAsins(
   
   log(`🔍 Detecting new ASINs for seller ${sellerUuid} - checking ${currentAsins.length} ASINs`);
 
-  // DELTA PROCESSING: Check for 30+ day old snapshots
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-  const { data: snapshot } = await supabase
-    .from('seller_snapshots')
-    .select('asin_list, snapshot_date')
-    .eq('seller_id', sellerUuid)
-    .lt('snapshot_date', thirtyDaysAgo.toISOString())
-    .order('snapshot_date', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  let incomingAsins = [...currentAsins]; // Create a copy to avoid mutation
-
-  if (snapshot) {
-    // Delta mode: Only process ASINs NOT in the snapshot
-    const snapshotAsins = new Set(snapshot.asin_list);
-    const deltaAsins = incomingAsins.filter(asin => !snapshotAsins.has(asin));
-    
-    log(`🚀 DELTA MODE: Using snapshot from ${snapshot.snapshot_date}`);
-    log(`📊 DELTA ANALYSIS: ${incomingAsins.length} total, ${snapshot.asin_list.length} in snapshot, ${deltaAsins.length} new`);
-    
-    // Update incomingAsins to only include delta ASINs
-    incomingAsins = deltaAsins;
-  }
-
   // Check against ALREADY PROCESSED products
   const { data: existingProducts } = await supabase
     .from('seller_products')
@@ -219,7 +192,7 @@ export async function findNewAsins(
   const pendingAsins = new Set(pendingBatches?.flatMap(b => b.new_asins) || []);
   
   // TRUE new ASINs = not in products AND not in pending batches
-  const trulyNewAsins = incomingAsins.filter(asin => 
+  const trulyNewAsins = currentAsins.filter(asin => 
     !existingAsins.has(asin) && !pendingAsins.has(asin)
   );
 

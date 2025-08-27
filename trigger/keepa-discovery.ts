@@ -1,11 +1,10 @@
 import { logger, task } from "@trigger.dev/sdk/v3";
 import { createClient } from "@supabase/supabase-js";
-import {
-  fetchSellerFromKeepa,
-  findNewAsins,
-  saveSellerData,
-  enqueueProductBatches
-} from "../supabase/functions/_shared/shared-node";
+
+// Import infrastructure operations
+import { fetchSellerData } from "../supabase/functions/_infrastructure/keepa-api.ts";
+import { findNewAsins, saveSeller } from "../supabase/functions/_infrastructure/database.ts";
+import { enqueueProductBatches } from "../supabase/functions/_infrastructure/queue.ts";
 
 // Automated seller monitoring job - runs every 2 hours
 export const keepaDiscovery = task({
@@ -81,7 +80,7 @@ export const keepaDiscovery = task({
           });
 
           // 1. Fetch current seller data from Keepa API
-          const keepaData = await fetchSellerFromKeepa(seller.seller_id, seller.domain, KEEPA_API_KEY);
+          const keepaData = await fetchSellerData(seller.seller_id, seller.domain, KEEPA_API_KEY);
           if (!keepaData) {
             logger.warn(`⚠️ No Keepa data for seller ${seller.seller_id}`);
             results.push({
@@ -96,7 +95,14 @@ export const keepaDiscovery = task({
           const asinAnalysis = await findNewAsins(seller.id, keepaData.asinList, supabase);
           
           // 3. Update seller data with fresh information and timestamp
-          await saveSellerData(supabase, seller, null, seller.seller_id, seller.domain, keepaData, true);
+          await saveSeller(supabase, {
+            id: seller.id,
+            seller_id: seller.seller_id,
+            domain: seller.domain,
+            seller_name: keepaData.sellerName || keepaData.businessName || seller.seller_name,
+            asin_count: keepaData.asinList?.length || 0,
+            last_checked_at: new Date().toISOString()
+          });
 
           // 4. Enqueue new products for processing if found
           let queueResult = null;
