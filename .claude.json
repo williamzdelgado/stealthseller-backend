@@ -1,1 +1,0 @@
-{"mcpServers":{"perplexity":{"type":"stdio","command":"uvx","args":["perplexity-mcp"],"env":{"PERPLEXITY_API_KEY":"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","PERPLEXITY_MODEL":"sonar-pro"}},"supabase":{"type":"stdio","command":"npx","args":["-y","@supabase/mcp-server-supabase@latest","--access-token","sbp_65b599b058c11703a8bf4e44191c34e9633868c8"],"env":{}}}}

@@ -39,6 +39,9 @@ node_modules/
 *.swp
 *.swo
 
+# Configuration files with secrets
+.claude.json
+
 # Supabase
 supabase/.temp
 supabase/.migrations
